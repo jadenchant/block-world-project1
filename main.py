@@ -21,11 +21,21 @@ class Plan:
         self.initial_state = initial_state
         self.goal_state = goal_state
 
-    #***=========================================
-    # First implement all the operators
-    # I implemented two operators to give you guys an example
-    # Please implement the remainder of the operators
-    #***=========================================
+    def pickup(self, block1):
+        """
+        Operator to pick up the block off the table
+        :param block1: block1 to pick up off the table
+        :type block1: Object of block.Block
+        :return: None
+        """
+
+        # get table object from initial state
+        table = State.find(self.initial_state, "table")
+
+        if block1.clear:
+            block1.on = None
+            block1.air = True
+
 
     def putdown(self, block1):
         """
@@ -41,11 +51,20 @@ class Plan:
         if block1.air:
             block1.on = table
             block1.clear = True
+            block1.air = False
+
+    def stack(self, block1, block2):
+        """
+        Operator to stack block1 on block 2
+        :param block1: block1 to unstack from block2
+        :type block1: Object of block.Block
+        :type block2: Object of block.Block
+        :return: None
+        """
 
     def unstack(self, block1, block2):
         """
         Operator to unstack block1 from block 2
-
         :param block1: block1 to unstack from block2
         :type block1: Object of block.Block
         :type block2: Object of block.Block
