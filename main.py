@@ -88,21 +88,20 @@ class Plan:
             block2.clear = True
 
     # Dummy function
-    def move(self, block1, location):
+    def move(self):
         """
-        Operator to move block1 to a location
-        :param block1: block1 to move
-        :type block1: Object of block.Block
-        :type location: Object of location
-        :return: None
+        # Operator to move block1 to a location
+        # :param block1: block1 to move
+        # :type block1: Object of block.Block
+        # :type location: Object of location
+        # :return: None
         """
 
-        if block1.clear:
-            self.pickup(block1)
-            if location.clear:
-                # putdown on location
-                self.putdown(block1)
-
+        # if block1.clear:
+        #     self.pickup(block1)
+        #     if location.clear:
+        #         # putdown on location
+        #         self.putdown(block1)
 
     # ***=========================================
     # After you implement all the operators
