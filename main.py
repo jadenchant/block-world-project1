@@ -36,7 +36,6 @@ class Plan:
             block1.on = None
             block1.air = True
 
-
     def putdown(self, block1):
         """
         Operator to put the block on the table
@@ -56,7 +55,7 @@ class Plan:
     def stack(self, block1, block2):
         """
         Operator to stack block1 on block 2
-        :param block1: block1 to unstack from block2
+        :param block1: block1 to stack from block2
         :type block1: Object of block.Block
         :type block2: Object of block.Block
         :return: None
@@ -82,6 +81,24 @@ class Plan:
             block1.on = None
 
             block2.clear = True
+
+    # Dummy function
+    def move(self, block1, location):
+        """
+        Operator to move block1 to a location
+        :param block1: block1 to move
+        :type block1: Object of block.Block
+        :type location: Object of location
+        :return: None
+        """
+
+        table = State.find(self.initial_state, "table")
+
+        if block1.clear:
+            self.pickup(block1)
+            block1.air = True
+
+
 
     # ***=========================================
     # After you implement all the operators
@@ -138,10 +155,4 @@ if __name__ == "__main__":
 
     p = Plan(initial_state_blocks, goal_state_blocks)
     p.sample_plan()
-    
-
-
-
-
-
 
