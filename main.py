@@ -61,6 +61,11 @@ class Plan:
         :return: None
         """
 
+        if block2.clear and block1.air:
+            block1.on = block2
+            block2.clear = False
+            block1.air = False
+
     def unstack(self, block1, block2):
         """
         Operator to unstack block1 from block 2
