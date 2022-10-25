@@ -92,12 +92,11 @@ class Plan:
         :return: None
         """
 
-        table = State.find(self.initial_state, "table")
-
         if block1.clear:
             self.pickup(block1)
-            block1.air = True
-
+            if location.clear:
+                # putdown on location
+                self.putdown(block1)
 
 
     # ***=========================================
