@@ -1,6 +1,6 @@
 ###=================================================
 # This file contains the code which creates blocks.
-########### evrything in the worls is a block object
+########### everything in the worlds is a block object
 ########### Each block object has the following attributes:
 #################### type: Triangle, square, table
 #################### id: "A", "B",....

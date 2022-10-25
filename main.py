@@ -103,11 +103,21 @@ class Plan:
         #         # putdown on location
         #         self.putdown(block1)
 
-    # ***=========================================
-    # After you implement all the operators
-    # The next step is to implement the actual plan.
-    # Please fill in the sample plan to output the appropriate steps to reach the goal
-    # ***=========================================
+
+    def findNeighbours(self):
+
+
+    def heuristic(self):
+
+
+    # Depth Fist Search
+    def dfs(self):
+
+
+    # Greedy Best First Search
+    def gbfs(self):
+
+
 
     def sample_plan(self):
 
