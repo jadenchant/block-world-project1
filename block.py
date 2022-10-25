@@ -41,11 +41,11 @@ class Block:
 
     # set the block to not clear
     def unclear(self):
-        self.isclear = False
+        self.clear = False
 
     # set the block to clear
     def clear(self):
-        self.isclear = True
+        self.clear = True
 
     def __str__(self):
         return self.id
