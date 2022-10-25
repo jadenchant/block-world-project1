@@ -104,18 +104,40 @@ class Plan:
         #         self.putdown(block1)
 
 
-    def findNeighbours(self):
+    def findNeighbours(self, node):
+        
+        table = State.find(self.initial_state, "table")
+        
+        #pass in current state of blocks so we can check each block?
 
+        #for block in blocks:
+        if node.clear:
+            if node.on == table:
+                print("blank")
+                
 
-    def heuristic(self):
+    # def heuristic(self):
 
 
     # Depth Fist Search
-    def dfs(self):
+    def dfs(self, node, visited, goal):
+        if visited is None:
+            visited = []
+            visited.append(node)
 
+        node.neighbours = findNeighbours(node)
 
-    # Greedy Best First Search
-    def gbfs(self):
+        for neighbour in node.neighbours:
+            if neighbour not in visited:
+                visited.append(node)
+                if neighbour == goal:
+                    print("Solution path: ")
+                    #return pathgen(neighbour)
+                else:
+                    return dfs(neighbour, visited, goal)
+
+    # Greedy Best First Search (if time allows)
+    # def gbfs(self):
 
 
 
