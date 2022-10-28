@@ -15,6 +15,13 @@ class State:
     def __init__(self):
         self.blocks = []
 
+    def blocks(self):
+        """
+        get method
+        :return: block.Block object list if it exists
+        """
+        return self.blocks
+
     @staticmethod
     def find(state, id):
         """
@@ -90,6 +97,4 @@ class State:
                 exec(f"self.{line}")
 
         return self.blocks
-
-
 

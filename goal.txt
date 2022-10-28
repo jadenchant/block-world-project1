@@ -1,5 +1,5 @@
 square(A)
-triangle(B)
+square(B)
 square(C)
 square(D)
 square(E)

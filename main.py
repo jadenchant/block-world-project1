@@ -105,8 +105,11 @@ class Plan:
 
 
     def findNeighbours(self, node):
-        
+
         table = State.find(self.initial_state, "table")
+
+        for block in State.blocks():
+
         
         #pass in current state of blocks so we can check each block?
 
@@ -119,7 +122,7 @@ class Plan:
     # def heuristic(self):
 
 
-    # Depth Fist Search
+    # Depth First Search Will
     def dfs(self, node, visited, goal):
         if visited is None:
             visited = []
@@ -136,10 +139,43 @@ class Plan:
                 else:
                     return dfs(neighbour, visited, goal)
 
+
+
+    # Depth First Search Jaden
+    def dfs_jaden(self):
+        frontier = [initial_state]
+        order = []
+
+        while True:
+            if not frontier:
+                return ["No Solution"]
+
+            current = frontier.pop()
+            order.append(current)
+            current.total += current.val
+
+            if current.total == path_sum:
+                current.total = 0
+                break
+            else:
+                for child in current.children:
+                    child.parent = current
+                    child.total += current.total
+                    frontier.append(child)
+                    current.total = 0
+
+        # Return Path
+        path = []
+        node = order.pop()
+        while node:
+            path.insert(0, node)
+            node = node.parent
+
+        return path
+
+
     # Greedy Best First Search (if time allows)
     # def gbfs(self):
-
-
 
     def sample_plan(self):
 
