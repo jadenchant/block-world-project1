@@ -108,9 +108,11 @@ class Plan:
 
         table = State.find(self.initial_state, "table")
 
-        for block in State.blocks():
+        neighbours = []
 
-        
+        for block in State.blocks():
+            # if bottom block is supposed to be on table dont add to list
+
         #pass in current state of blocks so we can check each block?
 
         #for block in blocks:
@@ -139,10 +141,16 @@ class Plan:
                 else:
                     return dfs(neighbour, visited, goal)
 
-
-
     # Depth First Search Jaden
     def dfs_jaden(self):
+
+        # Cases
+        # If block is on top and not on table and supposed to be on table, then put on table
+        # If block is in middle of two blocks and the one on top is supposed to be on the block in the middle,
+        # then move the top block to the table and then put the block under it on the block it should be on then put the top block on top
+        # 3 stacked blocked ???
+
+
         frontier = [initial_state]
         order = []
 
