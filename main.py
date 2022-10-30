@@ -111,6 +111,14 @@ class Plan:
         neighbours = []
 
         for block in State.blocks():
+            if block.clear:
+                if block.air:
+                    #add putdown to queue, add stack to queue
+                else:
+                    if block.on:
+                         # add unstack to queue
+                    else:
+                        #add pickup to queue
             # if bottom block is supposed to be on table dont add to list
 
         #pass in current state of blocks so we can check each block?
