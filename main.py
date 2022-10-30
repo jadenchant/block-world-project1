@@ -7,6 +7,12 @@
 
 from state import State
 
+class Move:
+    def __init__(self, action, block1, block2=None):
+        self.block1 = block1
+        self.block2 = block2
+        self.action = action
+        self.neighbours = []
 
 class Plan:
 
@@ -164,22 +170,32 @@ class Plan:
     # def heuristic(self):
 
 
-    # Depth First Search Will
-    def dfs(self, node, visited, goal):
+    # Depth First Search
+    def dfs(self, visited, goal, move=None):
         if visited is None:
             visited = []
-            visited.append(node)
+            #visited.append(move)
 
-        node.neighbours = findNeighbours(node)
+        if move is not None:
+            if move.action == "putdown":
+                self.putdown(move.block1)
+            if move.action == "stack":
+                self.stack(move.block1, move.block2)
+            if move.action == "pickup":
+                self.pickup(move.block1)
+            if move.action == "unstack":
+                self.unstack(move.block1, move.block2)
 
-        for neighbour in node.neighbours:
+        if State.blocks() == goal_state.blocks():
+            # return path, search complete
+
+        move.neighbours = self.findNeighbours()
+
+        for neighbour in move.neighbours:
             if neighbour not in visited:
-                visited.append(node)
-                if neighbour == goal:
-                    print("Solution path: ")
-                    #return pathgen(neighbour)
-                else:
-                    return dfs(neighbour, visited, goal)
+                visited.append(move)
+                return self.dfs(visited, goal, neighbour)
+        self.undo(move.action, move.block1, move.block2)
 
     # Depth First Search Jaden
     def dfs_jaden(self):
