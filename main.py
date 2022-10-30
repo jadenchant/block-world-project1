@@ -32,9 +32,11 @@ class Plan:
         # get table object from initial state
         table = State.find(self.initial_state, "table")
 
-        if block1.clear:
+        if block1.clear and block1.on == table:
             block1.on = None
             block1.air = True
+        else:
+            raise ValueError("pickup move is not allowed")
 
     def putdown(self, block1):
         """
@@ -51,6 +53,8 @@ class Plan:
             block1.on = table
             block1.clear = True
             block1.air = False
+        else:
+            raise ValueError("putdown move is not allowed")
 
     def stack(self, block1, block2):
         """
@@ -63,8 +67,11 @@ class Plan:
 
         if block2.clear and block1.air:
             block1.on = block2
+            block1.clear = True
             block2.clear = False
             block1.air = False
+        else:
+            raise ValueError("stack move is not allowed")
 
     def unstack(self, block1, block2):
         """
@@ -86,6 +93,8 @@ class Plan:
             block1.on = None
 
             block2.clear = True
+        else:
+            raise ValueError("unstack move is not allowed")
 
     # Dummy function
     def move(self):
@@ -103,8 +112,28 @@ class Plan:
         #         # putdown on location
         #         self.putdown(block1)
 
+    def undo(self, move, block1, block2 = None):
+        """
+        # Undo last move
+        :param move: string of move
+        :param block1: Object of block.Block
+        :param block2: Object of block.Block
+        :return: None
+        """
 
-    def findNeighbours(self, node):
+        if move == "pickup":
+            self.putdown(block1)
+        elif move == "putdown":
+            self.pickup(block1)
+        elif move == "stack":
+            self.unstack(block1, block2)
+        elif move == "unstack":
+            self.stack(block1, block2)
+        else:
+            raise ValueError("move is not found")
+
+
+    def findNeighbours(self):
 
         table = State.find(self.initial_state, "table")
 
@@ -113,20 +142,23 @@ class Plan:
         for block in State.blocks():
             if block.clear:
                 if block.air:
-                    #add putdown to queue, add stack to queue
+                    neighbours.append(Move("putdown", block))
+                    for stackedBlock in State.blocks():
+                        if stackedBlock.clear:
+                            neighbours.append(Move("stack", block, stackedBlock))
+                    # add putdown to queue, add stack to queue
                 else:
                     if block.on:
                          # add unstack to queue
                     else:
-                        #add pickup to queue
-            # if bottom block is supposed to be on table dont add to list
+                        neighbours.append(Move("pickup", block))
+                        # add pickup to queue
 
-        #pass in current state of blocks so we can check each block?
-
+        return neighbours
         #for block in blocks:
-        if node.clear:
-            if node.on == table:
-                print("blank")
+        # if node.clear:
+        #     if node.on == table:
+        #         print("blank")
                 
 
     # def heuristic(self):
@@ -151,43 +183,12 @@ class Plan:
 
     # Depth First Search Jaden
     def dfs_jaden(self):
-
         # Cases
         # If block is on top and not on table and supposed to be on table, then put on table
+        # If block is on top and not on
         # If block is in middle of two blocks and the one on top is supposed to be on the block in the middle,
         # then move the top block to the table and then put the block under it on the block it should be on then put the top block on top
         # 3 stacked blocked ???
-
-
-        frontier = [initial_state]
-        order = []
-
-        while True:
-            if not frontier:
-                return ["No Solution"]
-
-            current = frontier.pop()
-            order.append(current)
-            current.total += current.val
-
-            if current.total == path_sum:
-                current.total = 0
-                break
-            else:
-                for child in current.children:
-                    child.parent = current
-                    child.total += current.total
-                    frontier.append(child)
-                    current.total = 0
-
-        # Return Path
-        path = []
-        node = order.pop()
-        while node:
-            path.insert(0, node)
-            node = node.parent
-
-        return path
 
 
     # Greedy Best First Search (if time allows)

@@ -15,6 +15,7 @@ class State:
     def __init__(self):
         self.blocks = []
 
+    @property
     def blocks(self):
         """
         get method
@@ -97,4 +98,8 @@ class State:
                 exec(f"self.{line}")
 
         return self.blocks
+
+    @blocks.setter
+    def blocks(self, value):
+        self._blocks = value
 
