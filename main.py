@@ -154,7 +154,8 @@ class Plan:
                             neighbours.append(Move("stack", block, stackedBlock))
                     # add putdown to queue, add stack to queue
                 else:
-                    if block.on:
+                    if block.on != table:
+                        neighbours.append(Move("unstack", block, block.on))
                          # add unstack to queue
                     else:
                         neighbours.append(Move("pickup", block))
