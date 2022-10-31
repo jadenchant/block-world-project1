@@ -140,6 +140,12 @@ class Plan:
 
     # func neighbors(self, current_state):
     def neighbors(self, current_state):
+        """
+        Neighbors function
+        :param current_state: Object of state.State
+        :return: 5 Lists
+        """
+
         # Make 5 lists: putdown, unstack, stack, pickup
         putdownList = []
         unstackList = []
@@ -153,19 +159,30 @@ class Plan:
         table = State.find(self.initial_state, "table")
 
         # blocks in the air list
+        airList = []
         # loop through each block in the state and check whether the block is in the air
         # Add those blocks into the list
-
+        for block in current_state.blocks():
+            if block.air:
+                airList.append(block)
 
         # blocks on the table and clear list
+        table_clearList = []
         # loop through each block in the state and check the appropriate conditions for
         # the blocks to be on table and clear
         # Add those blocks into the list
+        for block in current_state.blocks():
+            if block.on == table and block.clear:
+                table_clearList.append(block)
 
         # blocks that are clear and not on the table
+        not_table_clearList = []
         # loop through each block in the state and check the appropriate conditions for
         # the blocks to be not on table and clear
         # Add those blocks into the list
+        for block in current_state.blocks():
+            if block.on != table and block.clear:
+                not_table_clearList.append(block)
 
         # if block in air list have element(s) then only do putdown and stack
         # putdown
@@ -181,6 +198,7 @@ class Plan:
         # apply operator for the two blocks in the operator
         # add those into stack list (made in the previous step)
 
+
         # if the block is not in the air - options: pickup, unstack, move (the steps for these should be somewhat the same as putdown and stack)
         # pickup options
         # apply pick operator on all blocks that are clear and are on the table
@@ -191,6 +209,7 @@ class Plan:
         # move
         # apply move operator to all blocks that are clear and not on the table to any block that is clear
         # it is the combination of blocks that are clear and not on table with blocks are simply clear (itertools recommendation)
+
 
         # return all five lists
 
