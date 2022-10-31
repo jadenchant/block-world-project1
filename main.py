@@ -138,7 +138,64 @@ class Plan:
         else:
             raise ValueError("move is not found")
 
+    # func neighbors(self, current_state):
+    def neighbors(self, current_state):
+        # Make 5 lists: putdown, unstack, stack, pickup
+        putdownList = []
+        unstackList = []
+        stackList = []
+        pickupList = []
 
+        # Make a copy of the current state
+        new_state = current_state
+
+        # Make a tables with the initial_state
+        table = State.find(self.initial_state, "table")
+
+        # blocks in the air list
+        # loop through each block in the state and check whether the block is in the air
+        # Add those blocks into the list
+
+
+        # blocks on the table and clear list
+        # loop through each block in the state and check the appropriate conditions for
+        # the blocks to be on table and clear
+        # Add those blocks into the list
+
+        # blocks that are clear and not on the table
+        # loop through each block in the state and check the appropriate conditions for
+        # the blocks to be not on table and clear
+        # Add those blocks into the list
+
+        # if block in air list have element(s) then only do putdown and stack
+        # putdown
+        # copy the state
+        # get the equivalent block from the copied state
+        # apply the operator
+        # add those into the putdown list
+        # stack
+        # it is a combination of (blocks_air & blocks_clear) (itertool recommendation)
+        # loop through all combinations:
+        # make a copy
+        # get the equivalent block from the copied state
+        # apply operator for the two blocks in the operator
+        # add those into stack list (made in the previous step)
+
+        # if the block is not in the air - options: pickup, unstack, move (the steps for these should be somewhat the same as putdown and stack)
+        # pickup options
+        # apply pick operator on all blocks that are clear and are on the table
+        # Add those into the pick list (made in the previous step)
+        # unstack
+        # apply unstack operator to all blocks that are clear and are not on table
+        # Add those into the unstack list (made in the previous step)
+        # move
+        # apply move operator to all blocks that are clear and not on the table to any block that is clear
+        # it is the combination of blocks that are clear and not on table with blocks are simply clear (itertools recommendation)
+
+        # return all five lists
+
+
+    # Old Neighbors
     def findNeighbours(self):
 
         table = State.find(self.initial_state, "table")
