@@ -62,7 +62,7 @@ class Block:
 
     def __ne__(self, other):
         try:
-            if self.id != other.id or self.on.id != other.on.id or self.clear != other.clear or self.air != other.air:
+            if self.id != other.id or self.on != other.on or self.clear != other.clear or self.air != other.air:
                 return True
         except Exception:
             return False

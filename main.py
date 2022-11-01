@@ -52,7 +52,7 @@ class Plan:
         # get table object from initial state
         table = State.find(self.initial_state, "table")
 
-        if block1.clear and block1.on.id == "table":
+        if block1.clear and block1 is not None and block1.on.id == table:
             block1.on = None
             block1.air = True
         else:
@@ -108,7 +108,7 @@ class Plan:
             # block1 should be in air
             # block1 should not be on block2
             # set block2 to clear (because block1 is in air)
-            block1.clear = False
+            block1.clear = True
             block1.air = True
             block1.on = None
 
@@ -198,36 +198,6 @@ class Plan:
             if block.on != table and block.clear:
                 not_table_clearList.append(block)
 
-        # if block in air list have element(s) then only do putdown and stack
-        # putdown
-        # copy the state
-        # get the equivalent block from the copied state
-        # apply the operator
-        # add those into the putdown list
-        # stack
-        # if is a combination of (blocks_air & blocks_clear) (itertool recommendation)
-        # loop through all combinations:
-        # make a copy
-        # get the equivalent block from the copied state
-        # apply operator for the two blocks in the operator
-        # add those into stack list (made in the previous step)
-
-
-        # if the block is not in the air - options: pickup, unstack, move (the steps for these should be somewhat the same as putdown and stack)
-        # pickup options
-        # apply pick operator on all blocks that are clear and are on the table
-        # Add those into the pick list (made in the previous step)
-        # unstack
-        # apply unstack operator to all blocks that are clear and are not on table
-        # Add those into the unstack list (made in the previous step)
-        # move
-        # apply move operator to all blocks that are clear and not on the table to any block that is clear
-        # it is the combination of blocks that are clear and not on table with blocks are simply clear (itertools recommendation)
-
-
-        # return all five lists
-
-
     # Old Neighbors
     def findNeighbours(self, current_state):
 
@@ -244,7 +214,7 @@ class Plan:
                             neighbours.append(Move("stack", block, stackedBlock))
                     # add putdown to queue, add stack to queue
                 else:
-                    if block.on != table:
+                    if block.on.id != "table":
                         neighbours.append(Move("unstack", block, block.on))
                          # add unstack to queue
                     else:
@@ -296,8 +266,14 @@ class Plan:
             block_names.append(init_block.id)
 
         for block in block_names:
-            if State.find(self.initial_state, block) != State.find(self.goal_state, block):
+            init_block = State.find(self.initial_state, block)
+            goal_block = State.find(self.goal_state, block)
+
+            if init_block.id != goal_block.id or init_block.on != goal_block.on or init_block.air != goal_block.air:
                 solutionFound = False
+
+            # if State.find(self.initial_state, block) != State.find(self.goal_state, block):
+            #     solutionFound = False
 
         if solutionFound:
             print("Solution found!")
@@ -312,7 +288,10 @@ class Plan:
             if neighbour not in visited:
                 visited.append(move)
                 return self.dfs(visited, neighbour)
-        # self.undo(move.action, move.block1, move.block2)
+
+        self.undo(move.action, move.block1, move.block2)
+        previous_move = visited.pop()
+        self.dfs(visited, previous_move)
 
     # Depth First Search Jaden
     # Cases
