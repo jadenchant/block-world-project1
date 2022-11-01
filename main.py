@@ -14,6 +14,20 @@ class Move:
         self.action = action
         self.neighbours = []
 
+    def __eq__(self, other):
+        try:
+            if self.block1 == other.block1 and self.action == other.action and self.block2 == other.block2:
+                return True
+        except Exception:
+            return False
+
+    def __ne__(self, other):
+        try:
+            if self.block1 != other.block1 or self.action != other.action or self.block2 != other.block2:
+                return True
+        except Exception:
+            return False
+
 class Plan:
 
     def __init__(self, initial_state, goal_state):
@@ -38,7 +52,7 @@ class Plan:
         # get table object from initial state
         table = State.find(self.initial_state, "table")
 
-        if block1.clear and block1.on == table:
+        if block1.clear and block1.on.id == "table":
             block1.on = None
             block1.air = True
         else:
@@ -221,11 +235,11 @@ class Plan:
 
         neighbours = []
 
-        for block in current_state.blocks:
+        for block in current_state:
             if block.clear:
                 if block.air:
                     neighbours.append(Move("putdown", block))
-                    for stackedBlock in current_state.blocks:
+                    for stackedBlock in current_state:
                         if stackedBlock.clear:
                             neighbours.append(Move("stack", block, stackedBlock))
                     # add putdown to queue, add stack to queue
@@ -248,7 +262,7 @@ class Plan:
 
 
     # Depth First Search
-    def dfs(self, visited, goal, move=None):
+    def dfs(self, visited, move=None):
         solutionFound = True
 
         if visited is None:
@@ -289,13 +303,16 @@ class Plan:
             print("Solution found!")
             return "Solution found!"
 
+        if move is None:
+            move = Move(None, None)
+
         move.neighbours = self.findNeighbours(self.initial_state)
 
         for neighbour in move.neighbours:
             if neighbour not in visited:
                 visited.append(move)
-                return self.dfs(visited, goal, neighbour)
-        self.undo(move.action, move.block1, move.block2)
+                return self.dfs(visited, neighbour)
+        # self.undo(move.action, move.block1, move.block2)
 
     # Depth First Search Jaden
     # Cases
@@ -351,10 +368,6 @@ if __name__ == "__main__":
     #display goal state
     State.display(goal_state_blocks, message="Goal State")
 
-    """
-    Sample Plan
-    """
-
     p = Plan(initial_state_blocks, goal_state_blocks)
-    p.dfs(None, goal_state_blocks)
+    p.dfs(None)
 
