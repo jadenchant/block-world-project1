@@ -53,6 +53,7 @@ class Block:
     def __repr__(self):
         return self.id
 
+    # need to compare attributes
     def __eq__(self, other):
         try:
             return self.id == other.id

@@ -11,17 +11,20 @@ from block import Block
 
 
 class State:
+    @property
+    def blocks(self):
+        return self._blocks
 
     def __init__(self):
         self.blocks = []
 
-    @property
-    def blocks(self):
-        """
-        get method
-        :return: block.Block object list if it exists
-        """
-        return self.blocks
+    # @property
+    # def blocks(self):
+    #     """
+    #     get method
+    #     :return: block.Block object list if it exists
+    #     """
+    #     return self.blocks
 
     @staticmethod
     def find(state, id):
@@ -32,8 +35,11 @@ class State:
         :return: block.Block object if it exists
                  else None
         """
-        return next((item for item in state
-                     if item.id == id), None)
+        for block in state:
+            if block.id == id:
+                return block
+        # return next((item for item in state
+        #              if item.id == id), None)
 
     def format_args(expr):
         i_open = expr.find('(')

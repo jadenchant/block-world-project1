@@ -143,7 +143,7 @@ class Plan:
         """
         Neighbors function
         :param current_state: Object of state.State
-        :return: 5 Lists
+        :return: 5 Lists of possible states
         """
 
         # Make 5 lists: putdown, unstack, stack, pickup
@@ -191,7 +191,7 @@ class Plan:
         # apply the operator
         # add those into the putdown list
         # stack
-        # it is a combination of (blocks_air & blocks_clear) (itertool recommendation)
+        # if is a combination of (blocks_air & blocks_clear) (itertool recommendation)
         # loop through all combinations:
         # make a copy
         # get the equivalent block from the copied state
@@ -215,17 +215,17 @@ class Plan:
 
 
     # Old Neighbors
-    def findNeighbours(self):
+    def findNeighbours(self, current_state):
 
         table = State.find(self.initial_state, "table")
 
         neighbours = []
 
-        for block in State.blocks():
+        for block in current_state.blocks:
             if block.clear:
                 if block.air:
                     neighbours.append(Move("putdown", block))
-                    for stackedBlock in State.blocks():
+                    for stackedBlock in current_state.blocks:
                         if stackedBlock.clear:
                             neighbours.append(Move("stack", block, stackedBlock))
                     # add putdown to queue, add stack to queue
@@ -256,17 +256,38 @@ class Plan:
         if move is not None:
             if move.action == "putdown":
                 self.putdown(move.block1)
+                action = f"putdown{move.block1}"
+                print("putdown")
+                State.display(self.initial_state, message=action)
             if move.action == "stack":
                 self.stack(move.block1, move.block2)
+                action = f"stack{move.block1, move.block2}"
+                print("stack")
+                State.display(self.initial_state, message=action)
             if move.action == "pickup":
                 self.pickup(move.block1)
+                action = f"pickup{move.block1}"
+                print("pickup")
+                State.display(self.initial_state, message=action)
             if move.action == "unstack":
                 self.unstack(move.block1, move.block2)
+                action = f"unstack{move.block1, move.block2}"
+                print("unstack")
+                State.display(self.initial_state, message=action)
 
-        if State.blocks() == goal_state.blocks():
-            # return path, search complete
+        block_names = []
+        for init_block in self.initial_state:
+            block_names.append(init_block.id)
 
-        move.neighbours = self.findNeighbours()
+        for block in block_names:
+            if State.find(self.initial_state, block) != State.find(self.goal_state, block):
+                solutionFound = False
+
+        if solutionFound:
+            print("Solution found!")
+            return "Solution found!"
+
+        move.neighbours = self.findNeighbours(self.initial_state)
 
         for neighbour in move.neighbours:
             if neighbour not in visited:
@@ -275,13 +296,12 @@ class Plan:
         self.undo(move.action, move.block1, move.block2)
 
     # Depth First Search Jaden
-    def dfs_jaden(self):
-        # Cases
-        # If block is on top and not on table and supposed to be on table, then put on table
-        # If block is on top and not on
-        # If block is in middle of two blocks and the one on top is supposed to be on the block in the middle,
-        # then move the top block to the table and then put the block under it on the block it should be on then put the top block on top
-        # 3 stacked blocked ???
+    # Cases
+    # If block is on top and not on table and supposed to be on table, then put on table
+    # If block is on top and not on
+    # If block is in middle of two blocks and the one on top is supposed to be on the block in the middle,
+    # then move the top block to the table and then put the block under it on the block it should be on then put the top block on top
+    # 3 stacked blocked ???
 
 
     # Greedy Best First Search (if time allows)
@@ -335,5 +355,5 @@ if __name__ == "__main__":
     """
 
     p = Plan(initial_state_blocks, goal_state_blocks)
-    p.sample_plan()
+    p.dfs(None, goal_state_blocks)
 
