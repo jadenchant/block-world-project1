@@ -53,9 +53,16 @@ class Block:
     def __repr__(self):
         return self.id
 
-    # need to compare attributes
     def __eq__(self, other):
         try:
-            return self.id == other.id
+            if self.id == other.id and self.on.id == other.on.id and self.clear == other.clear:
+                return True
+        except Exception:
+            return False
+
+    def __ne__(self, other):
+        try:
+            if self.id != other.id or self.on.id != other.on.id or self.clear != other.clear:
+                return True
         except Exception:
             return False
