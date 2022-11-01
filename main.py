@@ -249,6 +249,8 @@ class Plan:
 
     # Depth First Search
     def dfs(self, visited, goal, move=None):
+        solutionFound = True
+
         if visited is None:
             visited = []
             #visited.append(move)
@@ -332,7 +334,6 @@ class Plan:
         # print the state
         action = f"Putdown({block_d}, table)"
         State.display(self.initial_state, message=action)
-
 
 if __name__ == "__main__":
 
