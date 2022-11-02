@@ -215,10 +215,12 @@ class Plan:
                     # add putdown to queue, add stack to queue
                 else:
                     if block.on.id != "table":
-                        neighbours.append(Move("unstack", block, block.on))
+                        if State.find(goal_state.blocks, block.id).on.id != block.on.id:
+                            neighbours.append(Move("unstack", block, block.on))
                         # add unstack to queue
                     else:
-                        neighbours.append(Move("pickup", block))
+                        if State.find(goal_state.blocks, block.id).on.id != "table":
+                            neighbours.append(Move("pickup", block))
                         # add pickup to queue
 
         return neighbours
