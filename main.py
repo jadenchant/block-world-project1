@@ -7,6 +7,7 @@
 
 from state import State
 
+
 class Move:
     def __init__(self, action, block1, block2=None):
         self.block1 = block1
@@ -15,18 +16,17 @@ class Move:
         self.neighbours = []
 
     def __eq__(self, other):
-        try:
-            if self.block1 == other.block1 and self.action == other.action and self.block2 == other.block2:
-                return True
-        except Exception:
+        if self.block1 == other.block1 and self.action == other.action and self.block2 == other.block2:
+            return True
+        else:
             return False
 
     def __ne__(self, other):
-        try:
-            if self.block1 != other.block1 or self.action != other.action or self.block2 != other.block2:
-                return True
-        except Exception:
+        if self.block1 != other.block1 or self.action != other.action or self.block2 != other.block2:
+            return True
+        else:
             return False
+
 
 class Plan:
 
@@ -52,7 +52,7 @@ class Plan:
         # get table object from initial state
         table = State.find(self.initial_state, "table")
 
-        if block1.clear and block1 is not None and block1.on.id == table:
+        if block1.clear and block1.on and block1.on.id == "table":
             block1.on = None
             block1.air = True
         else:
@@ -132,7 +132,7 @@ class Plan:
         #         # putdown on location
         #         self.putdown(block1)
 
-    def undo(self, move, block1, block2 = None):
+    def undo(self, move, block1, block2=None):
         """
         # Undo last move
         :param move: string of move
@@ -216,7 +216,7 @@ class Plan:
                 else:
                     if block.on.id != "table":
                         neighbours.append(Move("unstack", block, block.on))
-                         # add unstack to queue
+                        # add unstack to queue
                     else:
                         neighbours.append(Move("pickup", block))
                         # add pickup to queue
@@ -226,10 +226,8 @@ class Plan:
         # if node.clear:
         #     if node.on == table:
         #         print("blank")
-                
 
     # def heuristic(self):
-
 
     # Depth First Search
     def dfs(self, visited, move=None):
@@ -298,9 +296,9 @@ class Plan:
     # If block is on top and not on table and supposed to be on table, then put on table
     # If block is on top and not on
     # If block is in middle of two blocks and the one on top is supposed to be on the block in the middle,
-    # then move the top block to the table and then put the block under it on the block it should be on then put the top block on top
+    # then move the top block to the table and then put the block under it on the block it should be on,
+    # then put the top block on top
     # 3 stacked blocked ???
-
 
     # Greedy Best First Search (if time allows)
     # def gbfs(self):
@@ -330,6 +328,7 @@ class Plan:
         # print the state
         action = f"Putdown({block_d}, table)"
         State.display(self.initial_state, message=action)
+
 
 if __name__ == "__main__":
 
