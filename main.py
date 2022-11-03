@@ -153,53 +153,6 @@ class Plan:
         else:
             raise ValueError("move is not found")
 
-    # func neighbors(self, current_state):
-    def neighbors(self, current_state):
-        """
-        Neighbors function
-        :param current_state: Object of state.State
-        :return: 5 Lists of possible states
-        """
-
-        # Make 5 lists: putdown, unstack, stack, pickup
-        putdownList = []
-        unstackList = []
-        stackList = []
-        pickupList = []
-
-        # Make a copy of the current state
-        new_state = current_state
-
-        # Make a tables with the initial_state
-        table = State.find(self.initial_state, "table")
-
-        # blocks in the air list
-        airList = []
-        # loop through each block in the state and check whether the block is in the air
-        # Add those blocks into the list
-        for block in current_state.blocks():
-            if block.air:
-                airList.append(block)
-
-        # blocks on the table and clear list
-        table_clearList = []
-        # loop through each block in the state and check the appropriate conditions for
-        # the blocks to be on table and clear
-        # Add those blocks into the list
-        for block in current_state.blocks():
-            if block.on == table and block.clear:
-                table_clearList.append(block)
-
-        # blocks that are clear and not on the table
-        not_table_clearList = []
-        # loop through each block in the state and check the appropriate conditions for
-        # the blocks to be not on table and clear
-        # Add those blocks into the list
-        for block in current_state.blocks():
-            if block.on != table and block.clear:
-                not_table_clearList.append(block)
-
-    # Old Neighbors
     def findNeighbours(self, current_state):
 
         table = State.find(self.initial_state, "table")
@@ -240,14 +193,16 @@ class Plan:
         state = copy.deepcopy(istate)
         visited = copy.deepcopy(ivisited)
 
+        # Initialize visited
         if visited is None:
             visited = []
 
+        # Make a copy of the state
         if state is None:
             state = copy.deepcopy(self.initial_state)
 
+        # Make move
         if move is not None:
-
             if move.action == "putdown":
                 self.putdown(move.block1)
                 action = f"putdown{move.block1}"
@@ -286,10 +241,10 @@ class Plan:
         if move is None:
             move = Move(None, None)
 
+        # Find neighbours of the current move state
         move.neighbours = self.findNeighbours(state)
 
-
-        # this block checks to see if we've found the solution or not
+        # checks if to see if the solution is found or not
         block_names = []
         for init_block in self.initial_state:
             block_names.append(init_block.id)
@@ -299,11 +254,13 @@ class Plan:
             if state_block.id != goal_block.id or state_block.on != goal_block.on or state_block.air != goal_block.air:
                 solutionFound = False
 
+        # Check if solution is found and display final state
         if solutionFound:
             print("Solution found!")
-            #return "Solution found!"
+            State.display(state, message="Final")
             exit()
         else:
+            # Recursive neighbours section to find more moves
             for neighbour in move.neighbours:
                 if neighbour not in visited:
                     visited.append(neighbour)
