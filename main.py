@@ -8,6 +8,7 @@
 from state import State
 import copy
 
+
 class Move:
     def __init__(self, action, block1, block2=None):
         self.block1 = block1
@@ -154,6 +155,11 @@ class Plan:
             raise ValueError("move is not found")
 
     def findNeighbours(self, current_state):
+        """
+        Find current state moves
+        :param current_state: State
+        :return: List of Moves
+        """
 
         table = State.find(self.initial_state, "table")
 
@@ -185,8 +191,15 @@ class Plan:
 
         return neighbours
 
-    # Depth First Search
     def dfs(self, imove=None, istate=None, ivisited=None):
+        """
+        Depth First Search
+        :param imove: Move
+        :param istate: State
+        :param ivisited: visited List
+        :return: None
+        """
+
         solutionFound = True
 
         #initialize variables, set variables equal to parameters being passed in
@@ -237,7 +250,6 @@ class Plan:
                 else:
                     updatedState.append(block)
             state = copy.deepcopy(updatedState)
-
 
         if move is None:
             move = Move(None, None)
