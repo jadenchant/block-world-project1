@@ -6,7 +6,7 @@
 ###=================================================
 
 from state import State
-
+import copy
 
 class Move:
     def __init__(self, action, block1, block2=None):
@@ -55,6 +55,7 @@ class Plan:
         if block1.clear and block1.on and block1.on.id == "table":
             block1.on = None
             block1.air = True
+            block1.clear = False
         else:
             raise ValueError("pickup move is not allowed")
 
@@ -108,7 +109,7 @@ class Plan:
             # block1 should be in air
             # block1 should not be on block2
             # set block2 to clear (because block1 is in air)
-            block1.clear = True
+            block1.clear = False
             block1.air = True
             block1.on = None
 
@@ -204,16 +205,21 @@ class Plan:
         table = State.find(self.initial_state, "table")
 
         neighbours = []
+        handsfull = False
 
         for block in current_state:
-            if block.clear:
-                if block.air:
-                    neighbours.append(Move("putdown", block))
-                    for stackedBlock in current_state:
-                        if stackedBlock.clear:
-                            neighbours.append(Move("stack", block, stackedBlock))
-                    # add putdown to queue, add stack to queue
-                else:
+            if block.air:
+                handsfull = True
+
+        for block in current_state:
+            if block.air:
+                neighbours.append(Move("putdown", block))
+                for stackedBlock in current_state:
+                    if stackedBlock.clear and stackedBlock != block:
+                        neighbours.append(Move("stack", block, stackedBlock))
+                # add putdown to queue, add stack to queue
+            else:
+                if handsfull is False and block.clear:
                     if block.on.id != "table":
                         if State.find(goal_state.blocks, block.id).on.id != block.on.id:
                             neighbours.append(Move("unstack", block, block.on))
@@ -224,86 +230,84 @@ class Plan:
                         # add pickup to queue
 
         return neighbours
-        #for block in blocks:
-        # if node.clear:
-        #     if node.on == table:
-        #         print("blank")
-
-    # def heuristic(self):
 
     # Depth First Search
-    def dfs(self, visited, move=None):
+    def dfs(self, imove=None, istate=None, ivisited=None):
         solutionFound = True
+
+        #initialize variables, set variables equal to parameters being passed in
+        move = copy.deepcopy(imove)
+        state = copy.deepcopy(istate)
+        visited = copy.deepcopy(ivisited)
 
         if visited is None:
             visited = []
-            #visited.append(move)
+
+        if state is None:
+            state = copy.deepcopy(self.initial_state)
 
         if move is not None:
+
             if move.action == "putdown":
                 self.putdown(move.block1)
                 action = f"putdown{move.block1}"
                 print("putdown")
-                State.display(self.initial_state, message=action)
+                State.display(state, message=action)
             if move.action == "stack":
                 self.stack(move.block1, move.block2)
                 action = f"stack{move.block1, move.block2}"
                 print("stack")
-                State.display(self.initial_state, message=action)
+                State.display(state, message=action)
             if move.action == "pickup":
                 self.pickup(move.block1)
                 action = f"pickup{move.block1}"
                 print("pickup")
-                State.display(self.initial_state, message=action)
+                State.display(state, message=action)
             if move.action == "unstack":
                 self.unstack(move.block1, move.block2)
                 action = f"unstack{move.block1, move.block2}"
                 print("unstack")
-                State.display(self.initial_state, message=action)
+                State.display(state, message=action)
 
-        block_names = []
-        for init_block in self.initial_state:
-            block_names.append(init_block.id)
+            updatedState = []
+            for block in state:
+                if block.id == move.block1.id:
+                    updatedState.append(move.block1)
+                elif move.block2 is not None:
+                    if block.id == move.block2.id:
+                        updatedState.append(move.block2)
+                    else:
+                        updatedState.append(block)
+                else:
+                    updatedState.append(block)
+            state = copy.deepcopy(updatedState)
 
-        for block in block_names:
-            init_block = State.find(self.initial_state, block)
-            goal_block = State.find(self.goal_state, block)
-
-            if init_block.id != goal_block.id or init_block.on != goal_block.on or init_block.air != goal_block.air:
-                solutionFound = False
-
-            # if State.find(self.initial_state, block) != State.find(self.goal_state, block):
-            #     solutionFound = False
-
-        if solutionFound:
-            print("Solution found!")
-            return "Solution found!"
 
         if move is None:
             move = Move(None, None)
 
-        move.neighbours = self.findNeighbours(self.initial_state)
+        move.neighbours = self.findNeighbours(state)
 
-        for neighbour in move.neighbours:
-            if neighbour not in visited:
-                visited.append(move)
-                return self.dfs(visited, neighbour)
 
-        self.undo(move.action, move.block1, move.block2)
-        previous_move = visited.pop()
-        self.dfs(visited, previous_move)
+        # this block checks to see if we've found the solution or not
+        block_names = []
+        for init_block in self.initial_state:
+            block_names.append(init_block.id)
+        for block in block_names:
+            state_block = State.find(state, block)
+            goal_block = State.find(self.goal_state, block)
+            if state_block.id != goal_block.id or state_block.on != goal_block.on or state_block.air != goal_block.air:
+                solutionFound = False
 
-    # Depth First Search Jaden
-    # Cases
-    # If block is on top and not on table and supposed to be on table, then put on table
-    # If block is on top and not on
-    # If block is in middle of two blocks and the one on top is supposed to be on the block in the middle,
-    # then move the top block to the table and then put the block under it on the block it should be on,
-    # then put the top block on top
-    # 3 stacked blocked ???
-
-    # Greedy Best First Search (if time allows)
-    # def gbfs(self):
+        if solutionFound:
+            print("Solution found!")
+            #return "Solution found!"
+            exit()
+        else:
+            for neighbour in move.neighbours:
+                if neighbour not in visited:
+                    visited.append(neighbour)
+                    self.dfs(neighbour, state, visited)
 
     def sample_plan(self):
 
