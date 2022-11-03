@@ -267,32 +267,6 @@ class Plan:
                     visited.append(neighbour)
                     self.dfs(neighbour, state, visited)
 
-    def sample_plan(self):
-
-        # get the specific block objects
-        # Then, write code to understand the block i.e., if it is clear (or) on table, etc.
-        # Then, write code to perform actions using the operators (pick-up, stack, unstack).
-
-        # Below I manually hardcoded the plan for the current initial and goal state
-        # You must automate this code such that it would produce a plan for any initial and goal states.
-
-        block_c = State.find(self.initial_state, "C")
-        block_d = State.find(self.initial_state, "D")
-
-        # Unstack the block
-        self.unstack(block_d, block_c)
-
-        # print the state
-        action = f"unstack{block_d, block_c}"
-        State.display(self.initial_state, message=action)
-
-        # put the block on the table
-        self.putdown(block_d)
-
-        # print the state
-        action = f"Putdown({block_d}, table)"
-        State.display(self.initial_state, message=action)
-
 
 if __name__ == "__main__":
 
