@@ -133,26 +133,6 @@ class Plan:
         #         # putdown on location
         #         self.putdown(block1)
 
-    def undo(self, move, block1, block2=None):
-        """
-        # Undo last move
-        :param move: string of move
-        :param block1: Object of block.Block
-        :param block2: Object of block.Block
-        :return: None
-        """
-
-        if move == "pickup":
-            self.putdown(block1)
-        elif move == "putdown":
-            self.pickup(block1)
-        elif move == "stack":
-            self.unstack(block1, block2)
-        elif move == "unstack":
-            self.stack(block1, block2)
-        else:
-            raise ValueError("move is not found")
-
     def findNeighbours(self, current_state):
         """
         Find current state moves
