@@ -8,7 +8,6 @@
 from state import State
 import copy
 
-
 class Move:
     def __init__(self, action, block1, block2=None):
         self.block1 = block1
@@ -164,19 +163,20 @@ class Plan:
         table = State.find(self.initial_state, "table")
 
         neighbours = []
+        #the handsfull variable ensures that the algorithm does not pick up or unstack a block while it has one in its hand
         handsfull = False
 
         for block in current_state:
             if block.air:
                 handsfull = True
 
+        #find all valid neighbours and append to neighbours list
         for block in current_state:
             if block.air:
                 neighbours.append(Move("putdown", block))
                 for stackedBlock in current_state:
                     if stackedBlock.clear and stackedBlock != block:
                         neighbours.append(Move("stack", block, stackedBlock))
-                # add putdown to queue, add stack to queue
             else:
                 if handsfull is False and block.clear:
                     if block.on.id != "table":
@@ -217,6 +217,7 @@ class Plan:
 
         # Make move
         if move is not None:
+            #If a move has been passed into the dfs call, run that move
             if move.action == "putdown":
                 self.putdown(move.block1)
                 action = f"putdown{move.block1}"
@@ -238,6 +239,8 @@ class Plan:
                 print("unstack")
                 State.display(state, message=action)
 
+            #Create a new list of blocks that includes the blocks that have had their values changed by the move's action function (stack, unstack, etc)
+            #If the block has not been changed in the move's action function, we bring it into the list as is from the current state
             updatedState = []
             for block in state:
                 if block.id == move.block1.id:
@@ -249,6 +252,7 @@ class Plan:
                         updatedState.append(block)
                 else:
                     updatedState.append(block)
+            #update state to be this new state list we've just created
             state = copy.deepcopy(updatedState)
 
         if move is None:
@@ -257,7 +261,7 @@ class Plan:
         # Find neighbours of the current move state
         move.neighbours = self.findNeighbours(state)
 
-        # checks if to see if the solution is found or not
+        # checks to see if the solution is found or not
         block_names = []
         for init_block in self.initial_state:
             block_names.append(init_block.id)
@@ -278,6 +282,32 @@ class Plan:
                 if neighbour not in visited:
                     visited.append(neighbour)
                     self.dfs(neighbour, state, visited)
+
+    def sample_plan(self):
+
+        # get the specific block objects
+        # Then, write code to understand the block i.e., if it is clear (or) on table, etc.
+        # Then, write code to perform actions using the operators (pick-up, stack, unstack).
+
+        # Below I manually hardcoded the plan for the current initial and goal state
+        # You must automate this code such that it would produce a plan for any initial and goal states.
+
+        block_c = State.find(self.initial_state, "C")
+        block_d = State.find(self.initial_state, "D")
+
+        # Unstack the block
+        self.unstack(block_d, block_c)
+
+        # print the state
+        action = f"unstack{block_d, block_c}"
+        State.display(self.initial_state, message=action)
+
+        # put the block on the table
+        self.putdown(block_d)
+
+        # print the state
+        action = f"Putdown({block_d}, table)"
+        State.display(self.initial_state, message=action)
 
 
 if __name__ == "__main__":
