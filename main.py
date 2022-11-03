@@ -174,13 +174,14 @@ class Plan:
             else:
                 if handsfull is False and block.clear:
                     if block.on.id != "table":
-                        if State.find(goal_state.blocks, block.id).on.id != block.on.id:
-                            neighbours.append(Move("unstack", block, block.on))
-                        # add unstack to queue
+                        current_block = block
+                        while current_block.on.id != "table":
+                            if State.find(goal_state.blocks, current_block.id).on.id != current_block.on.id:
+                                neighbours.append(Move("unstack", block, block.on))
+                            current_block = current_block.on
                     else:
-                        if State.find(goal_state.blocks, block.id).on.id != "table":
+                        if State.find(goal_state.blocks, block.id).on != table:
                             neighbours.append(Move("pickup", block))
-                        # add pickup to queue
 
         return neighbours
 
