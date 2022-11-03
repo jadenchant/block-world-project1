@@ -55,7 +55,7 @@ class Block:
 
     def __eq__(self, other):
         try:
-            if self.id == other.id and self.on.id == other.on.id and self.clear == other.clear and self.air == other.air:
+            if self.id == other.id and self.on == other.on and self.clear == other.clear and self.air == other.air:
                 return True
         except Exception:
             return False
