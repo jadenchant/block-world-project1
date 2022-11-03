@@ -269,8 +269,8 @@ class Plan:
 
         # Check if solution is found and display final state
         if solutionFound:
-            print("Solution found!")
-            State.display(state, message="Final")
+            # print("Solution found!")
+            State.display(state, message="Final Goal State")
             exit()
         else:
             # Recursive neighbours section to find more moves
@@ -298,4 +298,3 @@ if __name__ == "__main__":
 
     p = Plan(initial_state_blocks, goal_state_blocks)
     p.dfs(None)
-
